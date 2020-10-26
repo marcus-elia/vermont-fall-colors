@@ -2,220 +2,148 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct Point2D
+[RequireComponent(typeof(MeshFilter))]
+public class Chunk : MonoBehaviour
 {
-    public int x;
-    public int z;
+    // Basic chunk properties
+    private int chunkID;
+    private Point2D chunkCoords; // top left
+    private Vector3 center;
+    private int sideLength;
+    public GameObject ground;
 
-    public Point2D(int x, int z)
-    {
-        this.x = x;
-        this.z = z;
-    }
-}
-
-public class ChunkManager : MonoBehaviour
-{
-    public static int chunkSize = 10;
-    public Transform playerTransform;
-    private int currentPlayerChunkID;
-    public int renderRadius = 3;
-    private Dictionary<int, GameObject> allSeenChunks;
-    private List<GameObject> currentChunks;
-
-    public GameObject ChunkPrefab;
+    // Terrain things
+    private int xSize; // number of terrain squares per side (vertices per side - 1)
+    private int zSize;
+    Mesh mesh;
+    Vector3[] vertices;
+    int[] triangles;
+    private float[,] heightMap;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        currentPlayerChunkID = getChunkIDContainingPoint(playerTransform.position, chunkSize);
-        allSeenChunks = new Dictionary<int, GameObject>();
-        currentChunks = new List<GameObject>();
-        updateChunks();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (updateCurrentPlayerChunkID())
-        {
-            updateChunks();
-        }
+
     }
 
-    // If the player enters a new chunk, return true and update the chunk id
-    private bool updateCurrentPlayerChunkID()
+    public void EnableDrawing()
     {
-        int newChunkID = getChunkIDContainingPoint(playerTransform.position, chunkSize);
-        if (newChunkID != currentPlayerChunkID)
-        {
-            currentPlayerChunkID = newChunkID;
-            return true;
-        }
-        return false;
+        ground.GetComponent<MeshRenderer>().enabled = true;
+        GetComponent<MeshFilter>().GetComponent<MeshRenderer>().enabled = true;
+    }
+    public void DisableDrawing()
+    {
+        ground.GetComponent<MeshRenderer>().enabled = false;
+        GetComponent<MeshFilter>().GetComponent<MeshRenderer>().enabled = false;
     }
 
-    private void updateChunks()
+    // Setters
+    public void setChunkID(int inputID)
     {
-        // Disable previous chunks from drawing, and remove them from the arraylist
-        for (int i = 0; i < currentChunks.Count; i++)
-        {
-            currentChunks[i].GetComponent<Chunk>().DisableDrawing();
-        }
-        currentChunks = new List<GameObject>();
-
-        // Go through the new chunks and add/create them
-        List<int> chunkIDs = getChunkIDsAroundID(currentPlayerChunkID, renderRadius);
-        for (int i = 0; i < chunkIDs.Count; i++)
-        {
-            int id = (chunkIDs[i]);
-            if (allSeenChunks.ContainsKey(id))
-            {
-                currentChunks.Add(allSeenChunks[id]);
-                allSeenChunks[id].GetComponent<Chunk>().EnableDrawing();
-            }
-            else
-            {
-                //Chunk c = new Chunk(id, chunkSize, transform);
-                GameObject c = Instantiate(ChunkPrefab);
-                c.GetComponent<Chunk>().setChunkID(id);
-                c.GetComponent<Chunk>().setSideLength(chunkSize);
-                c.GetComponent<Chunk>().InitializeGround();
-                c.GetComponent<Chunk>().EnableDrawing();
-                allSeenChunks.Add(id, c);
-                currentChunks.Add(c);
-            }
-        }
+        chunkID = inputID;
+        chunkCoords = ChunkManager.chunkIDtoPoint2D(chunkID);
+    }
+    public void setSideLength(int inputSideLength)
+    {
+        sideLength = inputSideLength;
+        center = new Vector3(sideLength * chunkCoords.x + sideLength / 2.0f, 0f, sideLength * chunkCoords.z + sideLength / 2.0f);
+    }
+    public void setHeightMap(float[,] inputHeightMap)
+    {
+        heightMap = inputHeightMap;
+    }
+    public void setXSize(int input)
+    {
+        xSize = input;
+    }
+    public void setZSize(int input)
+    {
+        zSize = input;
+    }
+    public void InitializeMesh()
+    {
+        mesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = mesh;
+    }
+    public void InitializeGround()
+    {
+        ground = Instantiate(ground);
+        ground.transform.position = center;
+    }
+    // Returns a random point on the plane of this chunk, that is not within buffer of the border
+    private Vector3 getRandomPoint(float buffer)
+    {
+        float randomX = Random.Range(-sideLength / 2 + buffer, sideLength / 2 - buffer);
+        float randomZ = Random.Range(-sideLength / 2 + buffer, sideLength / 2 - buffer);
+        return center + new Vector3(randomX, 0f, randomZ);
     }
 
-    // =======================================
-    //
-    //               Math Things
-    //
-    // =======================================
-    public static int nearestPerfectSquare(int n)
+    public void CreateShape()
     {
-        int squareJumpAmount = 3;
-        int curSquare = 1;
-        int prevSquare = 0;
-        while (curSquare < n)
-        {
-            prevSquare = curSquare;
-            curSquare += squareJumpAmount;
-            squareJumpAmount += 2;  // the difference between consecutive squares is odd integer
-        }
-        if (n - prevSquare > curSquare - n)
-        {
-            return curSquare;
-        }
-        else
-        {
-            return prevSquare;
-        }
-    }
-    // Assuming n is a perfect square, return the square root of n as an int
-    public static int isqrt(int n)
-    {
-        return (int)Mathf.Round(Mathf.Sqrt(n));
-    }
-    // Convert a ChunkID to the coordinates of the chunk
-    public static Point2D chunkIDtoPoint2D(int n)
-    {
-        int s = nearestPerfectSquare(n);
-        int sq = isqrt(s);
-        if (s % 2 == 0)
-        {
-            if (n >= s)
-            {
-                return new Point2D(sq / 2, -sq / 2 + n - s);
-            }
-            else
-            {
-                return new Point2D(sq / 2 - s + n, -sq / 2);
-            }
-        }
-        else
-        {
-            if (n >= s)
-            {
-                return new Point2D(-(sq + 1) / 2, (sq + 1) / 2 - 1 - n + s);
-            }
-            else
-            {
-                return new Point2D(-(sq + 1) / 2 + s - n, (sq + 1) / 2 - 1);
-            }
-        }
-    }
-    // Convert the coordinates of the chunk to the ChunkID
-    public static int chunkCoordsToChunkID(int a, int b)
-    {
-        // Bottom Zone
-        if (b > 0 && a >= -b && a < b)
-        {
-            return 4 * b * b + 3 * b - a;
-        }
-        // Left Zone
-        else if (a < 0 && b < -a && b >= a)
-        {
-            return 4 * a * a + 3 * a - b;
-        }
-        // Top Zone
-        else if (b < 0 && a <= -b && a > b)
-        {
-            return 4 * b * b + b + a;
-        }
-        // Right Zone
-        else if (a > 0 && b <= a && b > -a)
-        {
-            return 4 * a * a + a + b;
-        }
-        // Only a=0, b=0 is not in a zone
-        else
-        {
-            return 0;
-        }
-    }
-    // Wrapper function
-    public static int point2DtoChunkID(Point2D p)
-    {
-        return chunkCoordsToChunkID(p.x, p.z);
-    }
-    public static float distanceFormula(float x1, float y1, float x2, float y2)
-    {
-        return Mathf.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-    }
-    public static float distance2d(Vector3 v1, Vector3 v2)
-    {
-        return distanceFormula(v1.x, v1.z, v2.x, v2.z);
-    }
-    // Get a diamond shape of chunk ids centered around the given point
-    public static List<int> getChunkIDsAroundPoint(Point2D p, int radius)
-    {
-        List<int> result = new List<int>();
+        vertices = new Vector3[(xSize+1) * (zSize+1)];
 
-        // Start at the bottom of the diamond and work up from there
-        for (int b = p.z + radius; b >= p.z - radius; b--)
+        int i = 0;
+        float xCoord, zCoord;
+        for (int z = 0; z < zSize+1; z++)
         {
-            int distanceFromZ = Mathf.Abs(b - p.z);
-            for (int a = p.x - (radius - distanceFromZ); a <= p.x + (radius - distanceFromZ); a++)
+            for (int x = 0; x < xSize+1; x++)
             {
-                result.Add(chunkCoordsToChunkID(a, b));
+                xCoord = center.x - sideLength / 2 + x * sideLength / xSize;
+                zCoord = center.z - sideLength / 2 + z * sideLength / zSize;
+                vertices[i] = new Vector3(xCoord, heightMap[x, z] * 10, zCoord);
+                i++;
             }
         }
-        return result;
+
+
+        triangles = new int[xSize * zSize * 6];
+
+        int vert = 0;
+        int tris = 0;
+        for (int z = 0; z < zSize; z++)
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                triangles[tris + 0] = vert + 0;
+                triangles[tris + 1] = vert + xSize + 1;
+                triangles[tris + 2] = vert + 1;
+                triangles[tris + 3] = vert + 1;
+                triangles[tris + 4] = vert + xSize + 1;
+                triangles[tris + 5] = vert + xSize + 2;
+
+                vert++;
+                tris += 6;
+            }
+            vert++;
+        }
+
     }
-    // Wrapper
-    public static List<int> getChunkIDsAroundID(int id, int radius)
+
+    public void UpdateMesh()
     {
-        return getChunkIDsAroundPoint(chunkIDtoPoint2D(id), radius);
+        mesh.Clear();
+
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+
+        mesh.RecalculateNormals();
     }
-    // Get the chunkID of the chunk containing a given point
-    int getChunkIDContainingPoint(Vector3 p, int chunkSize)
+
+    private void OnDrawGizmos()
     {
-        int x = (int)Mathf.Floor(p.x / chunkSize);
-        int z = (int)Mathf.Floor(p.z / chunkSize);
-        return chunkCoordsToChunkID(x, z);
+        if (vertices == null)
+        {
+            return;
+        }
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            Gizmos.DrawSphere(vertices[i], .1f);
+        }
     }
 }
-
