@@ -22,7 +22,7 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, numOctaves, persistence, lacunarity);
+        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, numOctaves, persistence, lacunarity, new Vector2(0,0));
 
         Color[] colorMap = new Color[mapWidth * mapHeight];
 

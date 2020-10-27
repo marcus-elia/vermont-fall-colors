@@ -19,7 +19,7 @@ public class ChunkManager : MonoBehaviour
     public static int chunkSize = 10;
     public Transform playerTransform;
     private int currentPlayerChunkID;
-    public int renderRadius = 3;
+    public int renderRadius = 5;
     private Dictionary<int, GameObject> allSeenChunks;
     private List<GameObject> currentChunks;
     private Dictionary<int, SuperChunk> superChunkByID;
@@ -30,7 +30,9 @@ public class ChunkManager : MonoBehaviour
 
     public GameObject ChunkPrefab;
 
-    public int seed = 1;
+    public static int seed = 1;
+    private static int noiseScale = 50;
+    private static int numOctaves = 5;
 
     // Start is called before the first frame update
     void Start()
@@ -89,9 +91,31 @@ public class ChunkManager : MonoBehaviour
                 SuperChunk sc;
                 if (!superChunkByID.ContainsKey(superChunkID))
                 {
-                    float[,] newHeightMap = Noise.GenerateNoiseMap(noiseMapSize, noiseMapSize, seed, 20, 5, 0.5f, 2);
+                    Point2D superChunkCoords = chunkIDtoPoint2D(superChunkID);
+                    Vector2 offset = new Vector2(superChunkCoords.x * noiseMapSize, -superChunkCoords.z * noiseMapSize);
+                    float[,] newHeightMap = Noise.GenerateNoiseMap(noiseMapSize, noiseMapSize, seed, noiseScale, numOctaves, 0.5f, 2, offset);
                     sc = new SuperChunk(newHeightMap, superChunkSize, superChunkID, verticesPerChunk);
-                    seed++;
+                    // Make the edges agree with previously existing superchunks
+                    int idAbove = this.chunkIDAbove(superChunkID);
+                    if(superChunkByID.ContainsKey(idAbove))
+                    {
+                        sc.setTopEdge(superChunkByID[idAbove].getBottomEdge());
+                    }
+                    int idBelow = this.chunkIDBelow(superChunkID);
+                    if (superChunkByID.ContainsKey(idBelow))
+                    {
+                        sc.setBottomEdge(superChunkByID[idBelow].getTopEdge());
+                    }
+                    int idLeft = this.chunkIDLeft(superChunkID);
+                    if (superChunkByID.ContainsKey(idLeft))
+                    {
+                        sc.setLeftEdge(superChunkByID[idLeft].getRightEdge());
+                    }
+                    int idRight = this.chunkIDRight(superChunkID);
+                    if (superChunkByID.ContainsKey(idRight))
+                    {
+                        sc.setRightEdge(superChunkByID[idRight].getLeftEdge());
+                    }
                     superChunkByID[superChunkID] = sc;
                 }
                 else
@@ -109,7 +133,6 @@ public class ChunkManager : MonoBehaviour
                 c.GetComponent<Chunk>().setHeightMap(sc.GetSubHeightMap(sc.LocalCoords(id)));
                 c.GetComponent<Chunk>().CreateShape();
                 c.GetComponent<Chunk>().UpdateMesh();
-                c.GetComponent<Chunk>().InitializeGround();
                 c.GetComponent<Chunk>().EnableDrawing();
                 allSeenChunks.Add(id, c);
                 currentChunks.Add(c);
@@ -252,6 +275,27 @@ public class ChunkManager : MonoBehaviour
         int superChunkX = Mathf.FloorToInt((float)chunkCoords.x / superChunkSize);
         int superChunkZ = Mathf.FloorToInt((float)chunkCoords.z / superChunkSize);
         return chunkCoordsToChunkID(superChunkX, superChunkZ);
+    }
+
+    public int chunkIDAbove(int id)
+    {
+        Point2D chunkCoords = chunkIDtoPoint2D(id);
+        return chunkCoordsToChunkID(chunkCoords.x, chunkCoords.z - 1);
+    }
+    public int chunkIDBelow(int id)
+    {
+        Point2D chunkCoords = chunkIDtoPoint2D(id);
+        return chunkCoordsToChunkID(chunkCoords.x, chunkCoords.z + 1);
+    }
+    public int chunkIDLeft(int id)
+    {
+        Point2D chunkCoords = chunkIDtoPoint2D(id);
+        return chunkCoordsToChunkID(chunkCoords.x - 1, chunkCoords.z);
+    }
+    public int chunkIDRight(int id)
+    {
+        Point2D chunkCoords = chunkIDtoPoint2D(id);
+        return chunkCoordsToChunkID(chunkCoords.x + 1, chunkCoords.z);
     }
 }
 

@@ -1,8 +1,12 @@
-﻿using System.Collections;
+﻿// The Mesh part of this code is from a tutorial by Brackeys
+// https://www.youtube.com/watch?v=64NblGkAabk
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(Renderer))]
 public class Chunk : MonoBehaviour
 {
     // Basic chunk properties
@@ -10,7 +14,6 @@ public class Chunk : MonoBehaviour
     private Point2D chunkCoords; // top left
     private Vector3 center;
     private int sideLength;
-    public GameObject ground;
 
     // Terrain things
     private int xSize; // number of terrain squares per side (vertices per side - 1)
@@ -19,6 +22,9 @@ public class Chunk : MonoBehaviour
     Vector3[] vertices;
     int[] triangles;
     private float[,] heightMap;
+
+    public static float minTerrainHeight = 0;
+    public static float maxTerrainHeight = 10;
 
 
     // Start is called before the first frame update
@@ -34,12 +40,10 @@ public class Chunk : MonoBehaviour
 
     public void EnableDrawing()
     {
-        ground.GetComponent<MeshRenderer>().enabled = true;
         GetComponent<MeshFilter>().GetComponent<MeshRenderer>().enabled = true;
     }
     public void DisableDrawing()
     {
-        ground.GetComponent<MeshRenderer>().enabled = false;
         GetComponent<MeshFilter>().GetComponent<MeshRenderer>().enabled = false;
     }
 
@@ -71,11 +75,6 @@ public class Chunk : MonoBehaviour
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
     }
-    public void InitializeGround()
-    {
-        ground = Instantiate(ground);
-        ground.transform.position = center;
-    }
     // Returns a random point on the plane of this chunk, that is not within buffer of the border
     private Vector3 getRandomPoint(float buffer)
     {
@@ -86,17 +85,18 @@ public class Chunk : MonoBehaviour
 
     public void CreateShape()
     {
-        vertices = new Vector3[(xSize+1) * (zSize+1)];
+        vertices = new Vector3[(xSize + 1) * (zSize + 1)];
 
         int i = 0;
-        float xCoord, zCoord;
-        for (int z = 0; z < zSize+1; z++)
+        float xCoord, yCoord, zCoord;
+        for (int z = 0; z < zSize + 1; z++)
         {
-            for (int x = 0; x < xSize+1; x++)
+            for (int x = 0; x < xSize + 1; x++)
             {
                 xCoord = center.x - sideLength / 2 + x * sideLength / xSize;
                 zCoord = center.z - sideLength / 2 + z * sideLength / zSize;
-                vertices[i] = new Vector3(xCoord, heightMap[x, z] * 10, zCoord);
+                yCoord = minTerrainHeight + heightMap[x, z] * (maxTerrainHeight - minTerrainHeight);
+                vertices[i] = new Vector3(xCoord, yCoord, zCoord);
                 i++;
             }
         }
@@ -122,9 +122,7 @@ public class Chunk : MonoBehaviour
             }
             vert++;
         }
-
     }
-
     public void UpdateMesh()
     {
         mesh.Clear();
@@ -133,17 +131,5 @@ public class Chunk : MonoBehaviour
         mesh.triangles = triangles;
 
         mesh.RecalculateNormals();
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (vertices == null)
-        {
-            return;
-        }
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            Gizmos.DrawSphere(vertices[i], .1f);
-        }
     }
 }

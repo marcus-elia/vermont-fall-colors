@@ -18,7 +18,7 @@ public class SuperChunk
         size = inputSize;
         superChunkID = inputSuperChunkID;
         verticesPerChunk = inputVerticesPerChunk;
-        heightMapSize = size * verticesPerChunk;
+        heightMapSize = size * (verticesPerChunk-1) + 1;
         superChunkCoords = ChunkManager.chunkIDtoPoint2D(superChunkID);
     }
 
@@ -51,5 +51,70 @@ public class SuperChunk
             }
         }
         return subHeightMap;
+    }
+
+    public float[] getTopEdge()
+    {
+        float[] edge = new float[heightMapSize];
+        for(int i = 0; i < heightMapSize; i++)
+        {
+            edge[i] = heightMap[i, 0];
+        }
+        return edge;
+    }
+    public float[] getBottomEdge()
+    {
+        float[] edge = new float[heightMapSize];
+        for (int i = 0; i < heightMapSize; i++)
+        {
+            edge[i] = heightMap[i, heightMapSize-1];
+        }
+        return edge;
+    }
+    public float[] getLeftEdge()
+    {
+        float[] edge = new float[heightMapSize];
+        for (int i = 0; i < heightMapSize; i++)
+        {
+            edge[i] = heightMap[0,i];
+        }
+        return edge;
+    }
+    public float[] getRightEdge()
+    {
+        float[] edge = new float[heightMapSize];
+        for (int i = 0; i < heightMapSize; i++)
+        {
+            edge[i] = heightMap[heightMapSize-1, i];
+        }
+        return edge;
+    }
+    public void setTopEdge(float[] edge)
+    {
+        for(int i = 0; i < heightMapSize; i++)
+        {
+            heightMap[i, 0] = edge[i];
+        }
+    }
+    public void setBottomEdge(float[] edge)
+    {
+        for (int i = 0; i < heightMapSize; i++)
+        {
+            heightMap[i, heightMapSize-1] = edge[i];
+        }
+    }
+    public void setLeftEdge(float[] edge)
+    {
+        for (int i = 0; i < heightMapSize; i++)
+        {
+            heightMap[0,i] = edge[i];
+        }
+    }
+    public void setRightEdge(float[] edge)
+    {
+        for (int i = 0; i < heightMapSize; i++)
+        {
+            heightMap[heightMapSize-1, i] = edge[i];
+        }
     }
 }

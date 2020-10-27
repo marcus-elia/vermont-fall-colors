@@ -25,7 +25,7 @@ public class MeshGeneratorB : MonoBehaviour
 
     void CreateShape()
     {
-        float[,] noise = Noise.GenerateNoiseMap(xSize+1, zSize+1, 1, 10, 5, 0.5f, 2);
+        float[,] noise = Noise.GenerateNoiseMap(xSize+1, zSize+1, 1, 10, 5, 0.5f, 2, new Vector2(0,0));
 
         vertices = new Vector3[(xSize + 1) * (zSize + 1)];
 
