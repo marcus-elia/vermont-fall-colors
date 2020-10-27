@@ -21,10 +21,11 @@ public class Chunk : MonoBehaviour
     Mesh mesh;
     Vector3[] vertices;
     int[] triangles;
+    Vector2[] uvs;
     private float[,] heightMap;
 
     public static float minTerrainHeight = 0;
-    public static float maxTerrainHeight = 10;
+    public static float maxTerrainHeight = 20;
 
 
     // Start is called before the first frame update
@@ -122,6 +123,17 @@ public class Chunk : MonoBehaviour
             }
             vert++;
         }
+
+        uvs = new Vector2[vertices.Length];
+        i = 0;
+        for (int z = 0; z < zSize + 1; z++)
+        {
+            for (int x = 0; x < xSize + 1; x++)
+            {
+                uvs[i] = new Vector2((float)x / xSize, (float)z / zSize);
+                i++;
+            }
+        }
     }
     public void UpdateMesh()
     {
@@ -129,6 +141,7 @@ public class Chunk : MonoBehaviour
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.uv = uvs;
 
         mesh.RecalculateNormals();
     }

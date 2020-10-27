@@ -16,7 +16,7 @@ public struct Point2D
 
 public class ChunkManager : MonoBehaviour
 {
-    public static int chunkSize = 10;
+    public static int chunkSize = 20;
     public Transform playerTransform;
     private int currentPlayerChunkID;
     public int renderRadius = 5;
@@ -25,13 +25,13 @@ public class ChunkManager : MonoBehaviour
     private Dictionary<int, SuperChunk> superChunkByID;
 
     private static int superChunkSize = 5;
-    private static int verticesPerChunk = 10;
+    private static int verticesPerChunk = 15;
     private static int noiseMapSize = superChunkSize * (verticesPerChunk-1) + 1;
 
     public GameObject ChunkPrefab;
 
-    public static int seed = 1;
-    private static int noiseScale = 50;
+    public static int seed = 2;
+    private static int noiseScale = 40;
     private static int numOctaves = 5;
 
     // Start is called before the first frame update
