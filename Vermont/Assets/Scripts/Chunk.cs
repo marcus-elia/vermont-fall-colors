@@ -28,11 +28,21 @@ public class Chunk : MonoBehaviour
     public static float minTerrainHeight = 0;
     public static float maxTerrainHeight = 80;
 
-    public static int numTrees = 42;
-    public GameObject GreenTree;
-    public GameObject RedTree;
-    public GameObject OrangeTree;
-    public GameObject YellowTree;
+    public static int numTrees = 150;
+    public GameObject GreenTree1;
+    public GameObject RedTree1;
+    public GameObject OrangeTree1;
+    public GameObject YellowTree1;
+    public GameObject GreenTree2;
+    public GameObject RedTree2;
+    public GameObject OrangeTree2;
+    public GameObject YellowTree2;
+    public GameObject GreenTree3;
+    public GameObject RedTree3;
+    public GameObject OrangeTree3;
+    public GameObject YellowTree3;
+    public GameObject PineTree;
+    public GameObject DeadTree;
     public List<GameObject> trees;
 
 
@@ -100,22 +110,62 @@ public class Chunk : MonoBehaviour
             randomPoint.y = this.GetTerrainHeightAt(randomPoint);
 
             GameObject newTree;
-            float treeType = Random.Range(0, 4);
-            if(treeType < 0.5)
+            float treeType = Random.Range(0, 100);
+            if(treeType < 3)
             {
-                newTree = Instantiate(GreenTree);
+                newTree = Instantiate(GreenTree1);
             }
-            else if(treeType < 2)
+            else if(treeType < 6)
             {
-                newTree = Instantiate(RedTree);
+                newTree = Instantiate(RedTree1);
             }
-            else if(treeType < 3)
+            else if(treeType < 9)
             {
-                newTree = Instantiate(OrangeTree);
+                newTree = Instantiate(OrangeTree1);
+            }
+            else if(treeType < 12)
+            {
+                newTree = Instantiate(YellowTree1);
+            }
+            else if (treeType < 22)
+            {
+                newTree = Instantiate(GreenTree2);
+            }
+            else if (treeType < 32)
+            {
+                newTree = Instantiate(RedTree2);
+            }
+            else if (treeType < 42)
+            {
+                newTree = Instantiate(OrangeTree2);
+            }
+            else if (treeType < 52)
+            {
+                newTree = Instantiate(YellowTree2);
+            }
+            else if (treeType < 62)
+            {
+                newTree = Instantiate(GreenTree3);
+            }
+            else if (treeType < 72)
+            {
+                newTree = Instantiate(RedTree3);
+            }
+            else if (treeType < 82)
+            {
+                newTree = Instantiate(OrangeTree3);
+            }
+            else if (treeType < 92)
+            {
+                newTree = Instantiate(YellowTree3);
+            }
+            else if (treeType < 99)
+            {
+                newTree = Instantiate(PineTree);
             }
             else
             {
-                newTree = Instantiate(YellowTree);
+                newTree = Instantiate(DeadTree);
             }
             newTree.transform.position = randomPoint;
             trees.Add(newTree);

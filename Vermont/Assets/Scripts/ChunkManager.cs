@@ -31,7 +31,7 @@ public class ChunkManager : MonoBehaviour
     public GameObject ChunkPrefab;
 
     public static int seed = 2;
-    private static int noiseScale = 50;
+    private static int noiseScale = 80;
     private static int numOctaves = 5;
 
     // Start is called before the first frame update

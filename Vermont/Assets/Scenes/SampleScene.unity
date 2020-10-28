@@ -168,8 +168,8 @@ CharacterController:
   serializedVersion: 2
   m_Height: 3
   m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_SlopeLimit: 60
+  m_StepOffset: 0.8
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
@@ -503,7 +503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 247879514}
-  renderRadius: 5
+  renderRadius: 6
   ChunkPrefab: {fileID: 5819643800288182520, guid: fc7dbe18027ee9c45af86d2d91bd932a,
     type: 3}
 --- !u!4 &1885642968

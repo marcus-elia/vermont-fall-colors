@@ -46,12 +46,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c789b9c0297bb940aa5343aee4b7efa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GreenTree: {fileID: 2723684785491711626, guid: 912c8c2d2139c404497cbb6268b8ac92,
+  GreenTree1: {fileID: 2723684785491711626, guid: 912c8c2d2139c404497cbb6268b8ac92,
     type: 3}
-  RedTree: {fileID: 2113276679433120978, guid: 229fc7b290c674b408c64d3db4bafc0b, type: 3}
-  OrangeTree: {fileID: 2066302974576917956, guid: 1f27b8d7285078240a476ffba554755f,
+  RedTree1: {fileID: 2113276679433120978, guid: 229fc7b290c674b408c64d3db4bafc0b,
     type: 3}
-  YellowTree: {fileID: 4469390992998942809, guid: 44cf42038cc44f64bae8c9804a1a9ae7,
+  OrangeTree1: {fileID: 2066302974576917956, guid: 1f27b8d7285078240a476ffba554755f,
+    type: 3}
+  YellowTree1: {fileID: 4469390992998942809, guid: 44cf42038cc44f64bae8c9804a1a9ae7,
+    type: 3}
+  GreenTree2: {fileID: 7419610404314466651, guid: da20ebb1d04443249861c2ac0f2ded9e,
+    type: 3}
+  RedTree2: {fileID: 5157270948272179291, guid: ad33e0c6b60feb849b5dc0d366de9c3b,
+    type: 3}
+  OrangeTree2: {fileID: 2388720693075003943, guid: 0d6a10104197214448e034c2fa7232bf,
+    type: 3}
+  YellowTree2: {fileID: 8214007488039637550, guid: 2cf7a2aba5c6b22418b57f7f74f08b02,
+    type: 3}
+  GreenTree3: {fileID: 5396509044444324407, guid: 7e968b78d0404dc48b5e463e76bdb8c6,
+    type: 3}
+  RedTree3: {fileID: 4632549083157645309, guid: d60d572b936a6f1439f807fce26f37e7,
+    type: 3}
+  OrangeTree3: {fileID: 512807212358962898, guid: 531d44359d634554b984b7c878cdddd5,
+    type: 3}
+  YellowTree3: {fileID: 234163499869720491, guid: b243e29f36cc2a94eb87dfee2210fd5d,
+    type: 3}
+  PineTree: {fileID: 8749497312978093447, guid: 8e9c2ae8dc2197d49bff9e75017aed7e,
+    type: 3}
+  DeadTree: {fileID: 8007873269660198697, guid: 1acc51371ffbe584fa8e0b48b79ccdc2,
     type: 3}
   trees: []
 --- !u!33 &4307924658692157331
