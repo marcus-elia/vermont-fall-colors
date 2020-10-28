@@ -7,6 +7,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(Renderer))]
+[RequireComponent(typeof(MeshCollider))]
 public class Chunk : MonoBehaviour
 {
     // Basic chunk properties
@@ -233,5 +234,7 @@ public class Chunk : MonoBehaviour
         mesh.uv = uvs;
 
         mesh.RecalculateNormals();
+
+        GetComponent<MeshCollider>().sharedMesh = GetComponent<MeshFilter>().sharedMesh;
     }
 }
