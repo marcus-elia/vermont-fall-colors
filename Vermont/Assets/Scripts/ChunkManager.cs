@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public struct Point2D
 {
@@ -34,6 +36,12 @@ public class ChunkManager : MonoBehaviour
     private static int noiseScale = 80;
     private static int numOctaves = 5;
 
+    public Slider renderRadiusSlider;
+
+    public AudioSource backgroundMusic;
+    public Slider audioSlider;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -47,10 +55,19 @@ public class ChunkManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Update chunks if the player moved
         if (updateCurrentPlayerChunkID())
         {
             updateChunks();
         }
+        // Update chunks if render radius changed
+        int newRad = (int)renderRadiusSlider.value;
+        if(newRad != renderRadius)
+        {
+            this.UpdateRenderRadius(newRad);
+        }
+        // Update audio volume
+        backgroundMusic.volume = audioSlider.value;
     }
 
     // If the player enters a new chunk, return true and update the chunk id
@@ -139,6 +156,12 @@ public class ChunkManager : MonoBehaviour
                 currentChunks.Add(c);
             }
         }
+    }
+
+    public void UpdateRenderRadius(int newRadius)
+    {
+        this.renderRadius = newRadius;
+        this.updateChunks();
     }
 
     // =======================================
