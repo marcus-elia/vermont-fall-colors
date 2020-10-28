@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿// This code is not being used. It is from a tutorial by Sebastian Lague
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;

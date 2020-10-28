@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// This code is not used
+// It is from a tutorial by Brackeys
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
