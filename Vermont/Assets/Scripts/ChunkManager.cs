@@ -16,7 +16,7 @@ public struct Point2D
 
 public class ChunkManager : MonoBehaviour
 {
-    public static int chunkSize = 20;
+    public static int chunkSize = 50;
     public Transform playerTransform;
     private int currentPlayerChunkID;
     public int renderRadius = 5;
@@ -31,7 +31,7 @@ public class ChunkManager : MonoBehaviour
     public GameObject ChunkPrefab;
 
     public static int seed = 2;
-    private static int noiseScale = 40;
+    private static int noiseScale = 50;
     private static int numOctaves = 5;
 
     // Start is called before the first frame update
@@ -131,6 +131,7 @@ public class ChunkManager : MonoBehaviour
                 c.GetComponent<Chunk>().setZSize(verticesPerChunk-1);
                 c.GetComponent<Chunk>().InitializeMesh();
                 c.GetComponent<Chunk>().setHeightMap(sc.GetSubHeightMap(sc.LocalCoords(id)));
+                c.GetComponent<Chunk>().InitializeTrees();
                 c.GetComponent<Chunk>().CreateShape();
                 c.GetComponent<Chunk>().UpdateMesh();
                 c.GetComponent<Chunk>().EnableDrawing();

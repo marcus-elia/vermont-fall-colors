@@ -25,7 +25,14 @@ public class Chunk : MonoBehaviour
     private float[,] heightMap;
 
     public static float minTerrainHeight = 0;
-    public static float maxTerrainHeight = 20;
+    public static float maxTerrainHeight = 80;
+
+    public static int numTrees = 42;
+    public GameObject GreenTree;
+    public GameObject RedTree;
+    public GameObject OrangeTree;
+    public GameObject YellowTree;
+    public List<GameObject> trees;
 
 
     // Start is called before the first frame update
@@ -42,10 +49,18 @@ public class Chunk : MonoBehaviour
     public void EnableDrawing()
     {
         GetComponent<MeshFilter>().GetComponent<MeshRenderer>().enabled = true;
+        for(int i = 0; i < trees.Count; i++)
+        {
+            trees[i].GetComponent<MeshRenderer>().enabled = true;
+        }
     }
     public void DisableDrawing()
     {
         GetComponent<MeshFilter>().GetComponent<MeshRenderer>().enabled = false;
+        for(int i = 0; i < trees.Count; i++)
+        {
+            trees[i].GetComponent<MeshRenderer>().enabled = false;
+        }
     }
 
     // Setters
@@ -76,12 +91,86 @@ public class Chunk : MonoBehaviour
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
     }
+    public void InitializeTrees()
+    {
+        for(int i = 0; i < numTrees; i++)
+        {
+            Vector3 randomPoint = this.getRandomPoint(0);
+            randomPoint.y = this.GetTerrainHeightAt(randomPoint);
+
+            GameObject newTree;
+            float treeType = Random.Range(0, 4);
+            if(treeType < 0.5)
+            {
+                newTree = Instantiate(GreenTree);
+            }
+            else if(treeType < 2)
+            {
+                newTree = Instantiate(RedTree);
+            }
+            else if(treeType < 3)
+            {
+                newTree = Instantiate(OrangeTree);
+            }
+            else
+            {
+                newTree = Instantiate(YellowTree);
+            }
+            newTree.transform.position = randomPoint;
+            trees.Add(newTree);
+        }
+    }
     // Returns a random point on the plane of this chunk, that is not within buffer of the border
     private Vector3 getRandomPoint(float buffer)
     {
         float randomX = Random.Range(-sideLength / 2 + buffer, sideLength / 2 - buffer);
         float randomZ = Random.Range(-sideLength / 2 + buffer, sideLength / 2 - buffer);
         return center + new Vector3(randomX, 0f, randomZ);
+    }
+
+    // Return the actual 3d world coordinates of the mesh point
+    public Vector3 GetVertexCoordinates(int i, int j)
+    {
+        float x = center.x - sideLength/2 + i*(sideLength / xSize);
+        float y = minTerrainHeight + heightMap[i, j] * (maxTerrainHeight - minTerrainHeight);
+        float z = center.z - sideLength / 2 + j * (sideLength / zSize);
+        return new Vector3(x, y, z);
+    }
+
+    // Returns the terrain height at a given point in this chunk
+    public float GetTerrainHeightAt(Vector3 p)
+    {
+        float localX = p.x - (center.x - sideLength / (2f));
+        float localZ = p.z - (center.z - sideLength / (2f));
+        int i = Mathf.FloorToInt(localX / sideLength * xSize);
+        int j = Mathf.FloorToInt(localZ / sideLength * zSize);
+        Vector3 p1 = this.GetVertexCoordinates(i, j);
+        Vector3 p2 = this.GetVertexCoordinates(i+1, j);
+        Vector3 p3 = this.GetVertexCoordinates(i, j+1);
+        Vector3 p4 = this.GetVertexCoordinates(i+1, j+1);
+        return Mathf.Min(p1.y, p2.y, p3.y, p4.y);
+        /*
+        // Check which triangle the point is in
+        Vector3 v1, v2, corner;
+        if(ChunkManager.distanceFormula(p.x, p.z, p2.x, p2.z) < ChunkManager.distanceFormula(p.x, p.z, p3.x, p3.z)) // up right triangle
+        {
+            v1 = p1 - p2;
+            v2 = p4 - p2;
+            corner = p2;
+        }
+        else // down left triangle
+        {
+            v1 = p4 - p3;
+            v2 = p1 - p3;
+            corner = p3;
+        }
+        Vector3 normal = Vector3.Cross(v1, v2);
+        float b = normal.y;
+        if(b != 0)
+        {
+            return (Vector3.Dot(normal, corner) - normal.x*p.x - normal.z*p.z) / b;
+        }
+        return corner.y;*/
     }
 
     public void CreateShape()
