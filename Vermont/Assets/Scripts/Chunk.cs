@@ -111,55 +111,56 @@ public class Chunk : MonoBehaviour
 
             GameObject newTree;
             float treeType = Random.Range(0, 100);
-            if(treeType < 3)
+            int[] cutoffs = this.GetTreeTypeCutoffs(randomPoint.y);
+            if(treeType < cutoffs[0])
             {
                 newTree = Instantiate(GreenTree1);
             }
-            else if(treeType < 6)
+            else if(treeType < cutoffs[1])
             {
                 newTree = Instantiate(RedTree1);
             }
-            else if(treeType < 9)
+            else if(treeType < cutoffs[2])
             {
                 newTree = Instantiate(OrangeTree1);
             }
-            else if(treeType < 12)
+            else if(treeType < cutoffs[3])
             {
                 newTree = Instantiate(YellowTree1);
             }
-            else if (treeType < 22)
+            else if (treeType < cutoffs[4])
             {
                 newTree = Instantiate(GreenTree2);
             }
-            else if (treeType < 32)
+            else if (treeType < cutoffs[5])
             {
                 newTree = Instantiate(RedTree2);
             }
-            else if (treeType < 42)
+            else if (treeType < cutoffs[6])
             {
                 newTree = Instantiate(OrangeTree2);
             }
-            else if (treeType < 52)
+            else if (treeType < cutoffs[7])
             {
                 newTree = Instantiate(YellowTree2);
             }
-            else if (treeType < 62)
+            else if (treeType < cutoffs[8])
             {
                 newTree = Instantiate(GreenTree3);
             }
-            else if (treeType < 72)
+            else if (treeType < cutoffs[9])
             {
                 newTree = Instantiate(RedTree3);
             }
-            else if (treeType < 82)
+            else if (treeType < cutoffs[10])
             {
                 newTree = Instantiate(OrangeTree3);
             }
-            else if (treeType < 92)
+            else if (treeType < cutoffs[11])
             {
                 newTree = Instantiate(YellowTree3);
             }
-            else if (treeType < 99)
+            else if (treeType < cutoffs[12])
             {
                 newTree = Instantiate(PineTree);
             }
@@ -171,6 +172,33 @@ public class Chunk : MonoBehaviour
             trees.Add(newTree);
         }
     }
+
+    // Returns a list of the tree cutoffs based on the height of where the tree is being generated
+    // Green1, Red1, Orange1, Yellow1, Green2, Red2, Orange2, Yellow2, Green3, Red3, Orange3, Yellow3, Pine
+    private int[] GetTreeTypeCutoffs(float y)
+    {
+        if(y < -40) // No Greens
+        {
+            return new int[] { 0, 12, 24, 36, 36, 48, 60, 72, 72, 84, 96, 100, 100 };
+        }
+        else if (y < -10) // Everything
+        {
+            return new int[] { 3, 6, 9, 12, 22, 32, 42, 52, 62, 72, 82, 92, 99 };
+        }
+        else if(y < 0) // Reds
+        {
+            return new int[] { 1, 8, 9, 10, 14, 34, 42, 46, 48, 68, 74, 78, 96 };
+        }
+        else if (y < 20) // More pines
+        {
+            return new int[] { 2, 4, 6, 8, 13, 18, 23, 28, 33, 38, 43, 49, 90 };
+        }
+        else // Pines
+        {
+            return new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 88 };
+        }
+    }
+
     // Returns a random point on the plane of this chunk, that is not within buffer of the border
     private Vector3 getRandomPoint(float buffer)
     {

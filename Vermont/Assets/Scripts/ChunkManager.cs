@@ -45,6 +45,7 @@ public class ChunkManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        seed = (int)Time.time;
         superChunkByID = new Dictionary<int, SuperChunk>();
         currentPlayerChunkID = getChunkIDContainingPoint(playerTransform.position, chunkSize);
         allSeenChunks = new Dictionary<int, GameObject>();
