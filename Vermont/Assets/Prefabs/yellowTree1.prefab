@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 4502001943429067753}
   - component: {fileID: 4491904646428242059}
   - component: {fileID: 4531166966469562943}
+  - component: {fileID: 1148236575272476824}
   m_Layer: 0
-  m_Name: yellowTree
+  m_Name: yellowTree1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,3 +96,15 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: ccafc2ea8bec52841ac2b9fd34238310, type: 3}
+--- !u!114 &1148236575272476824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4469390992998942809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dc9867892500c04db22dd64cb69ea6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

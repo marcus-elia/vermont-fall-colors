@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7387513401112696539}
   - component: {fileID: 7395087249267343959}
   - component: {fileID: 7356284773903796225}
+  - component: {fileID: 5529378528991261224}
   m_Layer: 0
   m_Name: greenTree2
   m_TagString: Untagged
@@ -95,3 +96,15 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: bf854a44f4078f841a91c4fdfa36277a, type: 3}
+--- !u!114 &5529378528991261224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7419610404314466651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dc9867892500c04db22dd64cb69ea6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
