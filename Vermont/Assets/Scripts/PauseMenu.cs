@@ -7,13 +7,13 @@ using UnityEngine;
 
 public class PauseMenu : MonoBehaviour
 {
-    public static bool IsPaused = false;
+    public static bool IsPaused = true;
 
     public GameObject pauseMenuUI;
 
     void Start()
     {
-        pauseMenuUI.SetActive(false);
+        Pause();
     }
 
     // Update is called once per frame

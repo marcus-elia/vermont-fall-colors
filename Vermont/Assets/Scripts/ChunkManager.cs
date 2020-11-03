@@ -21,7 +21,7 @@ public class ChunkManager : MonoBehaviour
     public static int chunkSize = 50;
     public Transform playerTransform;
     private int currentPlayerChunkID;
-    public int renderRadius = 5;
+    public int renderRadius = 2;
     private Dictionary<int, GameObject> allSeenChunks;
     private List<GameObject> currentChunks;
     private Dictionary<int, SuperChunk> superChunkByID;
